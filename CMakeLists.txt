@@ -9,9 +9,10 @@ link_directories("D:/Libraries/SDL2-2.32.6/x86_64-w64-mingw32/lib")
 
 # Add your source file
 add_executable(gameboy_emulator src/main.cpp
-        src/memory/memory.hpp
-        src/memory/DMGmemory.hpp
-        src/memory/DMGmemory.cpp)
+        src/memory/Memory.hpp
+        src/memory/DMGMemory.hpp
+        src/memory/DMGMemory.cpp
+        src/memory/Memory.cpp)
 
 # Link against SDL2
 target_link_libraries(gameboy_emulator SDL2main SDL2)

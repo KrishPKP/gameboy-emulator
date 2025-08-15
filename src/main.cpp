@@ -1,31 +1,37 @@
 #define SDL_MAIN_HANDLED
 #include <SDL2/SDL.h>
 #include <iostream>
+#include <iostream>
+#include <vector>
+#include "memory/DMGMemory.hpp"
 
+int main() {
+    DMGMemory memory;
 
-int main(int argc, char* argv[])
-{
-    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-        std::cerr << "SDL could not initialize! SDL_Error: " << SDL_GetError() << "\n";
-        return 1;
+    // Create a fake ROM: 16 bytes with values 0x00, 0x01, ..., 0x0F
+    std::vector<DMGMemory::Byte> fakeROM(16);
+    for (int i = 0; i < 16; ++i) {
+        fakeROM[i] = static_cast<DMGMemory::Byte>(i);
     }
 
-    SDL_Window* window = SDL_CreateWindow(
-            "SDL2 Test Window",
-            SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-            640, 480,
-            SDL_WINDOW_SHOWN
-    );
+    // Load the ROM into memory starting at 0x0000
+    memory.loadROM(fakeROM);
 
-    if (!window) {
-        std::cerr << "Window could not be created! SDL_Error: " << SDL_GetError() << "\n";
-        SDL_Quit();
-        return 1;
+    // Read back ROM bytes and print
+    std::cout << "ROM bytes at 0x0000-0x000F:\n";
+    for (int addr = 0; addr < 16; ++addr) {
+        std::cout << "0x" << std::hex << addr << ": 0x"
+                  << std::hex << static_cast<int>(memory.read(addr)) << "\n";
     }
 
-    SDL_Delay(3000); // keep the window open for 3 seconds
+    // Test writing to RAM and reading it back
+    memory.write(0xC000, 0x42);
+    std::cout << "RAM test at 0xC000: 0x"
+              << std::hex << static_cast<int>(memory.read(0xC000)) << "\n";
 
-    SDL_DestroyWindow(window);
-    SDL_Quit();
+    // Test echo RAM mirroring (0xE000 mirrors 0xC000)
+    std::cout << "Echo RAM test at 0xE000 (should mirror 0xC000): 0x"
+              << std::hex << static_cast<int>(memory.read(0xE000)) << "\n";
+
     return 0;
 }

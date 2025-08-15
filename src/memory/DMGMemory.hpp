@@ -12,7 +12,7 @@
 class DMGMemory : public Memory {
 public:
     using Byte = uint8_t;
-    using Addr = uint16_t;
+    using Addr = uint32_t;
     static constexpr Addr MEMORY_SIZE = 0x10000; // 64KB DMG memory
 
     // DMG Memory Map constants
@@ -27,8 +27,8 @@ public:
 
     DMGMemory();
 
-    Byte read(Addr addr) const ;
-    void write(Addr addr, Byte value);
+    Byte read(Addr addr) const override;
+    void write(Addr addr, Byte value) override;
 
     // Loads a ROM into memory (max 32KB for DMG without banking)
     void loadROM(const std::vector<Byte>& romData);

@@ -9,7 +9,7 @@ DMGMemory::DMGMemory() {
     data.fill(0); // Initialize memory to zero
 }
 
-DMGMemory::Byte DMGMemory::read(Addr addr) const {
+Memory::Byte DMGMemory::read(Addr addr) const {
     if (addr >= MEMORY_SIZE) {
         throw std::out_of_range("DMGMemory read: Address out of range");
     }
